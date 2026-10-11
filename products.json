@@ -1,0 +1,37 @@
+{
+	"Clothing": [
+		{
+			"code": "123",
+			"quantity": 20,
+			"size": "M",
+			"price": 100.0,
+			"name": "Футболка"
+		},
+		{
+			"code": "12333",
+			"quantity": 10,
+			"size": "X",
+			"price": 1000.0,
+			"name": "Майка"
+		},
+		{
+			"code": "1234555",
+			"quantity": 20,
+			"color": "Красный",
+			"material": "Хлопок",
+			"size": "XL",
+			"price": 100.0,
+			"name": "Футболка",
+			"ширина": 20,
+			"discountAvailable": true
+		}
+	],
+	"Electronics": [
+		{
+			"code": "12333",
+			"quantity": 10,
+			"price": 1000.0,
+			"name": "Телефон"
+		}
+	]
+}
