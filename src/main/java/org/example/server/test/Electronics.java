@@ -1,5 +1,6 @@
 package org.example.server.test;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
 import org.example.server.system.Discountable;
 import org.example.server.system.Product;
 
@@ -12,19 +13,29 @@ public class Electronics extends Product implements Discountable {
         this.warrantyMonths = warrantyMonths;
     }
 
-    @Override
-    public double applyDiscount(double percent) {
-        return 0;
+    public int getWarrantyMonths() {
+        return warrantyMonths;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format("Электроника: %s (%s), Цена: %.2f, Кол-во: %d", code, name, price, quantity);
-//    }
+    @Override
+    public double applyDiscount(double percent) {
+        return percent;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Электроника: %s (%s), Цена: %.2f, Кол-во: %d, гарантия %d", code, name, price, quantity,warrantyMonths);
+    }
 
     @Override
     public String getInfo() {
         return "";
+    }
+    @Override
+    public JsonObject toJson() {
+        JsonObject json = super.toJson();
+        json.put("warrantyMonths", this.warrantyMonths);
+        return json;
     }
 
 }

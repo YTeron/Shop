@@ -13,25 +13,24 @@
 			"size": "X",
 			"price": 1000.0,
 			"name": "Майка"
-		},
-		{
-			"code": "1234555",
-			"quantity": 20,
-			"color": "Красный",
-			"material": "Хлопок",
-			"size": "XL",
-			"price": 100.0,
-			"name": "Футболка",
-			"ширина": 20,
-			"discountAvailable": true
 		}
 	],
 	"Electronics": [
 		{
-			"code": "12333",
+			"code": "1233",
 			"quantity": 10,
+			"warrantyMonths": 2000,
 			"price": 1000.0,
 			"name": "Телефон"
+		}
+	],
+	"Food": [
+		{
+			"code": "1203",
+			"quantity": 10,
+			"price": 60.0,
+			"name": "дошик",
+			"shelfLifeDays": 2000
 		}
 	]
 }

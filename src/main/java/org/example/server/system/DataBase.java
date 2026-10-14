@@ -1,9 +1,9 @@
-package org.example.server;
+package org.example.server.system;
 
 import com.github.cliftonlabs.json_simple.*;
-import org.example.server.system.Product;
 import org.example.server.test.Clothing;
 import org.example.server.test.Electronics;
+import org.example.server.test.Food;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +16,7 @@ import java.util.*;
 import static javax.swing.UIManager.getInt;
 import static javax.swing.UIManager.getString;
 
-public class Loger {
+public class DataBase {
     public static void jsonWriter(List<Product> items){
         Map<String, JsonArray> categories = new HashMap<>();
         int count = 0;
@@ -40,7 +40,6 @@ public class Loger {
     }
     public static List<Product> jsonReader(){
         List<Product> products =new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
         File file = new File("products.json");
         if (file.exists()) {
             try (FileReader reader = new FileReader(file)){
@@ -54,15 +53,8 @@ public class Loger {
                                 String name = getString(itemJson.get("name"));
                                 double price = getDouble(itemJson.get("price"));
                                 int quantity = getInt(itemJson.get("quantity"));
-                                Product product = createProductByCategory(categoryKey, code, name, price, quantity);
-                                for (Map.Entry<String, Object> entry : itemJson.entrySet()) {
-                                    String propKey = entry.getKey();
-
-                                    if (!isBaseField(propKey)) {
-                                        product.addProperty(propKey, entry.getValue());
-                                    }
-                                    products.add(product);
-                                }
+                                Product product = createProductByCategory(categoryKey, code, name, price, quantity,itemJson);
+                                products.add(product);
                             }
                         }
                     }
@@ -70,27 +62,43 @@ public class Loger {
 
             }
             catch (IOException | JsonException e){
-
             }
-
         } else {
-            System.out.println("Файл не найден");
+            System.err.println("Файл не найден");
         }
         return products;
     }
-    private static boolean isBaseField(String key) {
-        return key.equals("code") || key.equals("name") || key.equals("price") || key.equals("quantity");
-    }
-    private static Product createProductByCategory(String categoryKey, String code, String name, double price, int quantity) {
+    private static Product createProductByCategory(String categoryKey, String code, String name, double price, int quantity, Object itemObj) {
         return switch (categoryKey) {
-            case "Clothing" -> new Clothing(code, name, price, quantity, "DEFAULT");
-            case "Electronics" -> new Electronics(code, name, price, quantity, 0);
+            case "Clothing" -> new Clothing(code, name, price, quantity, getString(((JsonObject)itemObj).get("size")));
+            case "Electronics" -> new Electronics(code, name, price, quantity, getInt(((JsonObject)itemObj).get("warrantyMonths")));
+            case "Food" -> new Food(code, name, price, quantity, getInt(((JsonObject)itemObj).get("shelfLifeDays")));
             default -> throw new IllegalStateException("Unexpected value: " + categoryKey);
         };
     }
 
-    public static void jsonRemove(List<Product> items){
+    public static void jsonRemove(String code){
+        List<Product> all = jsonReader();
+        boolean b = all.removeIf(product -> product.getCode().equals(code));
 
+        if (b) {
+            System.out.println("Товар с кодом удалён " + code);
+            jsonWriter(all);
+        }
+        else System.err.println("Товар с таким кодом не найден " + code);
+
+    }
+    public static void jsonAdd(Product p){
+        List<Product> all = jsonReader();
+        for (Product existing : all) {
+            if (existing.getCode().equals(p.getCode())) {
+                System.err.println("Товар с кодом " + p.getCode() + " уже есть.");
+                return;
+            }
+        }
+        all.add(p);
+        jsonWriter(all);
+        System.out.println("Товар добавлен: " + p.getName());
     }
     private static void jsonInit(JsonObject items){
         File file = new File("products.json");

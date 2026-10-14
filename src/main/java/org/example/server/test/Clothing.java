@@ -14,7 +14,7 @@ public class Clothing extends Product implements Discountable {
 
     @Override
     public double applyDiscount(double percent) {
-        return 0;
+        return percent;
     }
 
     @Override
@@ -26,10 +26,10 @@ public class Clothing extends Product implements Discountable {
         return size;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format("Одежда: %s (%s), Цена: %.2f, Кол-во: %d, размер %s", code, name, price, quantity, size);
-//    }
+    @Override
+    public String toString() {
+        return String.format("Одежда: %s (%s), Цена: %.2f, Кол-во: %d, размер %s", code, name, price, quantity, size);
+    }
 
     @Override
     public JsonObject toJson() {

@@ -20,11 +20,6 @@ public abstract class Product {
         this.price = price>=0? price:0;
         this.quantity = quantity>=0? quantity:0;
     }
-    public Product addProperty(String key,Object value) {
-        this.extraProperties.put(key, value);
-        return this;
-    }
-    public abstract String getInfo();
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
@@ -51,5 +46,14 @@ public abstract class Product {
         }
 
         return sb.toString().trim();
+    }
+    public abstract String getInfo();
+    public String getCode() { return code; }
+    public String getName() { return name; }
+    public double getPrice() { return price; }
+    public int getQuantity() { return quantity; }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
