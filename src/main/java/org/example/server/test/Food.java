@@ -26,6 +26,6 @@ public class Food extends Product {
     }
     @Override
     public String toString() {
-        return String.format("Одежда: %s (%s), Цена: %.2f, Кол-во: %d, время жизни %d", code, name, price, quantity, shelfLifeDays);
+        return String.format("Одежда: %s (%s), Цена: %.2f, Кол-во: %d, время жизни %d", code, name, price, getQuantity(), shelfLifeDays);
     }
 }

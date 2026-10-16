@@ -2,7 +2,7 @@
 	"Clothing": [
 		{
 			"code": "123",
-			"quantity": 20,
+			"quantity": 15,
 			"size": "M",
 			"price": 100.0,
 			"name": "Футболка"

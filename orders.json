@@ -1,0 +1,25 @@
+{
+	"Order": [
+		{
+			"code": "ORD-1",
+			"items": [
+				{
+					"product": {
+						"code": "123",
+						"quantity": 15,
+						"size": "M",
+						"price": 100.0,
+						"name": "Футболка"
+					},
+					"quantity": 5
+				}
+			],
+			"customer": {
+				"cancelledOrders": 0,
+				"name": "YTeron",
+				"email": "qwe@qwe"
+			},
+			"status": "NEW"
+		}
+	]
+}

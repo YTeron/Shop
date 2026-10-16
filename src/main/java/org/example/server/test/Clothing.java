@@ -28,7 +28,7 @@ public class Clothing extends Product implements Discountable {
 
     @Override
     public String toString() {
-        return String.format("Одежда: %s (%s), Цена: %.2f, Кол-во: %d, размер %s", code, name, price, quantity, size);
+        return String.format("Одежда: %s (%s), Цена: %.2f, Кол-во: %d, размер %s", code, name, price, getQuantity(), size);
     }
 
     @Override

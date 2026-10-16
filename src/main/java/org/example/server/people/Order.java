@@ -1,5 +1,7 @@
 package org.example.server.people;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import org.example.server.system.Product;
 
 import java.util.LinkedHashMap;
@@ -30,6 +32,22 @@ public class Order {
     @Override
     public String toString() {
         return String.format("ID заказа: %s, почта %s, кол-во %d, статус %s", orderId,customer.getEmail(),items.size(),status);
+    }
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.put("code", this.orderId);
+        json.put("customer", this.customer.toJson());
+        JsonArray itemsArray = new JsonArray();
+        for (Map.Entry<Product, Integer> entry : this.items.entrySet()) {
+            JsonObject itemEntry = new JsonObject();
+            itemEntry.put("product", entry.getKey().toJson());
+            itemEntry.put("quantity", entry.getValue());
+            itemsArray.add(itemEntry);
+        }
+        json.put("items", itemsArray);
+        json.put("status", this.status);
+
+        return json;
     }
 
 }

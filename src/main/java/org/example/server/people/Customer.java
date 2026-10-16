@@ -1,5 +1,7 @@
 package org.example.server.people;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+
 import java.util.Objects;
 
 public class Customer {
@@ -29,6 +31,13 @@ public class Customer {
     @Override
     public String toString() {
         return String.format("Имя: %s, почта %s, orders %d", name,email,cancelledOrders);
+    }
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.put("name", this.name);
+        json.put("email", this.email);
+        json.put("cancelledOrders", this.cancelledOrders);
+        return json;
     }
     public void incrementCancelledOrders() {
         this.cancelledOrders++;

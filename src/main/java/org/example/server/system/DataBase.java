@@ -1,6 +1,8 @@
 package org.example.server.system;
 
 import com.github.cliftonlabs.json_simple.*;
+import org.example.server.people.Customer;
+import org.example.server.people.Order;
 import org.example.server.test.Clothing;
 import org.example.server.test.Electronics;
 import org.example.server.test.Food;
@@ -36,8 +38,30 @@ public class DataBase {
             rootJson.put(entry.getKey(), entry.getValue());
         }
         System.out.println("Всего найдено реализаций: " + count);
-        jsonInit(rootJson);
+        jsonInit(rootJson,"order.json");
     }
+    public static void jsonWriterForOrder(List<Order> items) {
+        Map<String, JsonArray> categories = new HashMap<>();
+        int count = 0;
+        for (Order order : items) {
+            if (order != null) {
+                count++;
+                System.out.println("Найден заказ: " + order.getClass().getName());
+                String className = order.getClass().getSimpleName();
+                JsonObject itemJson = order.toJson();
+                categories
+                        .computeIfAbsent(className, k -> new JsonArray())
+                        .add(itemJson);
+            }
+        }
+        JsonObject rootJson = new JsonObject();
+        for (Map.Entry<String, JsonArray> entry : categories.entrySet()) {
+            rootJson.put(entry.getKey(), entry.getValue());
+        }
+        System.out.println("Всего найдено заказов: " + count);
+        jsonInit(rootJson, "orders.json");
+    }
+
     public static List<Product> jsonReader(){
         List<Product> products =new ArrayList<>();
         File file = new File("products.json");
@@ -76,7 +100,67 @@ public class DataBase {
             default -> throw new IllegalStateException("Unexpected value: " + categoryKey);
         };
     }
+    public static List<Order> jsonReaderForOrder() {
+        List<Order> orders = new ArrayList<>();
+        File file = new File("orders.json");
+        if (file.exists()) {
+            try (FileReader reader = new FileReader(file)) {
+                JsonObject rootJson = (JsonObject) Jsoner.deserialize(reader);
+                if (rootJson != null) {
+                    for (String categoryKey : rootJson.keySet()) {
+                        Object value = rootJson.get(categoryKey);
+                        if (value instanceof JsonArray jsonArray) {
+                            for (Object itemObj : jsonArray) {
+                                if (itemObj instanceof JsonObject itemJson) {
+                                    String orderId = getString(itemJson.get("code"));
+                                    String status = getString(itemJson.get("status"));
 
+                                    JsonObject custJson = (JsonObject) itemJson.get("customer");
+                                    Customer customer = null;
+                                    if (custJson != null) {
+                                        customer = new Customer(getString(custJson.get("name")), getString(custJson.get("email")));
+                                    }
+
+                                    Order order = new Order(orderId, customer, new HashMap<>(), Order.Status.valueOf(status));
+                                    orders.add(order);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (IOException | JsonException e) {
+                System.err.println("Ошибка чтения файла orders.json: " + e.getMessage());
+            }
+        } else {
+            System.err.println("Файл orders.json не найден.");
+        }
+        return orders;
+    }
+
+    public static void jsonAddForOrder(Order order) {
+        List<Order> all = jsonReaderForOrder();
+        for (Order existing : all) {
+            if (existing.getOrderId().equals(order.getOrderId())) {
+                System.err.println("Заказ с ID " + order.getOrderId() + " уже существует.");
+                return;
+            }
+        }
+        all.add(order);
+        jsonWriterForOrder(all);
+        System.out.println("Заказ добавлен в базу: " + order.getOrderId());
+    }
+
+    public static void jsonRemoveForOrder(String orderId) {
+        List<Order> all = jsonReaderForOrder();
+        boolean removed = all.removeIf(order -> order.getOrderId().equals(orderId));
+
+        if (removed) {
+            System.out.println("Заказ с ID удалён: " + orderId);
+            jsonWriterForOrder(all);
+        } else {
+            System.err.println("Заказ с таким ID не найден: " + orderId);
+        }
+    }
     public static void jsonRemove(String code){
         List<Product> all = jsonReader();
         boolean b = all.removeIf(product -> product.getCode().equals(code));
@@ -100,8 +184,8 @@ public class DataBase {
         jsonWriter(all);
         System.out.println("Товар добавлен: " + p.getName());
     }
-    private static void jsonInit(JsonObject items){
-        File file = new File("products.json");
+    private static void jsonInit(JsonObject items,String fileName){
+        File file = new File(fileName);
         try {
             if (!file.exists() && file.createNewFile()) {
                 System.out.println("Файл products.json создан.");

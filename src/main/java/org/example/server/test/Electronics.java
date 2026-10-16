@@ -24,7 +24,7 @@ public class Electronics extends Product implements Discountable {
 
     @Override
     public String toString() {
-        return String.format("Электроника: %s (%s), Цена: %.2f, Кол-во: %d, гарантия %d", code, name, price, quantity,warrantyMonths);
+        return String.format("Электроника: %s (%s), Цена: %.2f, Кол-во: %d, гарантия %d", code, name, price, getQuantity() ,warrantyMonths);
     }
 
     @Override

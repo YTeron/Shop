@@ -10,9 +10,7 @@ public abstract class Product {
     protected String code;
     protected String name;
     protected double price;
-    protected int quantity;
-    protected Map<String, Object> extraProperties = new HashMap<>();
-
+    private int quantity;
 
     public Product(String code, String name, double price,int quantity){
         this.code = code;
@@ -27,9 +25,6 @@ public abstract class Product {
         json.put("name", this.name);
         json.put("price", this.price);
         json.put("quantity", this.quantity);
-        for (Map.Entry<String, Object> entry : extraProperties.entrySet()) {
-            json.put(entry.getKey(), entry.getValue());
-        }
         return json;
     }
     @Override
@@ -37,13 +32,6 @@ public abstract class Product {
         StringBuilder sb = new StringBuilder();
                 sb.append(String.format("предмет: %s (%s), Цена: %.2f, Кол-во: %d",
                         code, name, price, quantity));
-
-        if (extraProperties != null && !extraProperties.isEmpty()) {
-            sb.append(" | Доп. свойства: ");
-            for (Map.Entry<String, Object> entry : extraProperties.entrySet()) {
-                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
-            }
-        }
 
         return sb.toString().trim();
     }
